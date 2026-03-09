@@ -20,7 +20,6 @@ void UMover::BeginPlay()
 	Super::BeginPlay();
 
 	// PRATICA SUI PUNTATORI
-	
 	float MyFloat = 10.0f;
 	float* FloatPtr = &MyFloat;
 	
@@ -39,6 +38,13 @@ void UMover::BeginPlay()
 	
 	FString LogStringPtr = VectorPtr->ToCompactString();
 	UE_LOG(LogTemp, Display, TEXT("*VectorPtr: '%s'"), *LogStringPtr);
+	
+	
+	AActor* OwnerActor = GetOwner();
+	UE_LOG(LogTemp, Display, TEXT("Owner name or label: '%s'"), *OwnerActor->GetActorNameOrLabel());
+	
+	StartLocation = OwnerActor->GetActorLocation();
+	UE_LOG(LogTemp, Display, TEXT("StartLocation: '%s'"), *StartLocation.ToCompactString());
 }
 
 
@@ -47,6 +53,8 @@ void UMover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponent
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	FVector CurrentLocation = GetOwner()->GetActorLocation();
+	CurrentLocation.Z += 100 * DeltaTime; // 1 metro al secondo
+	GetOwner()->SetActorLocation(CurrentLocation);
 }
 
