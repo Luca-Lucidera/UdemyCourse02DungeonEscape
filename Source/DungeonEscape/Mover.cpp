@@ -22,29 +22,32 @@ void UMover::BeginPlay()
 	// PRATICA SUI PUNTATORI
 	float MyFloat = 10.0f;
 	float* FloatPtr = &MyFloat;
-	
+
 	float Result = *FloatPtr + 5;
 	UE_LOG(LogTemp, Display, TEXT("Result: '%f'"), Result);
-	
+
 	*FloatPtr = 30.0f;
 	UE_LOG(LogTemp, Display, TEXT("VALORI MyFloat: '%f' | *FloatPtr: '%f'"), MyFloat, *FloatPtr);
 	UE_LOG(LogTemp, Display, TEXT("INDIRIZZI &MyFloat: '%p' | *FloatPtr: '%p'"), &MyFloat, FloatPtr);
-	
+
 	FVector MyVector = FVector::OneVector;
 	FVector* VectorPtr = &MyVector;
 	VectorPtr->X = 10.0f;
 	VectorPtr->Y = 20.0f;
 	VectorPtr->Z = 30.0f;
-	
+
 	FString LogStringPtr = VectorPtr->ToCompactString();
 	UE_LOG(LogTemp, Display, TEXT("*VectorPtr: '%s'"), *LogStringPtr);
-	
-	
+
+
 	AActor* OwnerActor = GetOwner();
 	UE_LOG(LogTemp, Display, TEXT("Owner name or label: '%s'"), *OwnerActor->GetActorNameOrLabel());
-	
+
 	StartLocation = OwnerActor->GetActorLocation();
 	UE_LOG(LogTemp, Display, TEXT("StartLocation: '%s'"), *StartLocation.ToCompactString());
+
+	TargetLocation = StartLocation + MoveOffset;
+	UE_LOG(LogTemp, Display, TEXT("TargetLocation: '%s'"), *TargetLocation.ToCompactString());
 }
 
 
@@ -53,8 +56,24 @@ void UMover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponent
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	FVector CurrentLocation = GetOwner()->GetActorLocation();
-	CurrentLocation.Z += 100 * DeltaTime; // 1 metro al secondo
-	GetOwner()->SetActorLocation(CurrentLocation);
-}
+	if (bMoveUp)
+	{
+		TargetLocation = StartLocation + MoveOffset;
+	}
+	else
+	{
+		TargetLocation = StartLocation; 
+	}
 
+	FVector CurrentLocation = GetOwner()->GetActorLocation();
+
+	bReachedTarget = CurrentLocation.Equals(TargetLocation);
+
+	if (!bReachedTarget)
+	{
+		// Delta Speed = Distance / Time
+		float Speed = MoveOffset.Length() / MoveTime;
+		TargetLocation = FMath::VInterpConstantTo(CurrentLocation, TargetLocation, DeltaTime, Speed);
+		GetOwner()->SetActorLocation(TargetLocation);
+	}
+}

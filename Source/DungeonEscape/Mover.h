@@ -27,4 +27,16 @@ public:
 private:
 	UPROPERTY(VisibleAnywhere)
 	FVector StartLocation;
+	UPROPERTY(VisibleAnywhere)
+	FVector TargetLocation;
+	UPROPERTY(VisibleAnywhere)
+	bool bReachedTarget = false;
+	
+	UPROPERTY(EditAnywhere)
+	FVector MoveOffset;
+	UPROPERTY(EditAnywhere)
+	float MoveTime = 4;
+	UPROPERTY(EditAnywhere)
+	bool bMoveUp = false;
+	
 };
