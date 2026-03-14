@@ -34,7 +34,10 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	bool IsPressurePlate = false;
-
+	
+	UPROPERTY(EditAnywhere)
+	bool IsTriggered = false;
+	
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	                    int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -42,7 +45,6 @@ public:
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	                  int32 OtherBodyIndex);
-	
-private:
-	void Trigger(AActor* OtherActor, bool ShouldMoveUp);
+		
+	void Trigger(bool NewTriggerValue);
 };

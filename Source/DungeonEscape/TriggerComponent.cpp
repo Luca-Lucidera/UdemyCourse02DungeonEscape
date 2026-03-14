@@ -44,29 +44,50 @@ void UTriggerComponent::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
                                        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                        const FHitResult& SweepResult)
 {
-	Trigger(OtherActor, true);
+	if (IsValid(OtherActor) && !OtherActor->ActorHasTag("PressurePlateActivator"))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Other Actor does not have PressurePlateActivator tag!"));
+		return;
+	}
+	
+	if (IsTriggered)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Trigger value is already triggered!"));
+		return;
+	}
+
+	Trigger(true);
 }
 
 
 void UTriggerComponent::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
                                      UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	Trigger(OtherActor, false);
-}
-
-void UTriggerComponent::Trigger(AActor* OtherActor, bool ShouldMoveUp)
-{
-	if (!IsValid(Mover))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("MoverComponent not found!"));
-		return;
-	}
-
 	if (IsValid(OtherActor) && !OtherActor->ActorHasTag("PressurePlateActivator"))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Other Actor does not have PressurePlateActivator tag!"));
 		return;
 	}
 
-	Mover->bMoveUp = false;
+	if (!IsTriggered)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Trigger value is not triggered!"));
+		return;
+	}
+
+	Trigger(false);
+}
+
+void UTriggerComponent::Trigger(bool NewTriggerValue)
+{
+	
+	IsTriggered = NewTriggerValue;
+	
+	if (!IsValid(Mover))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("MoverComponent not found!"));
+		return;
+	}
+
+	Mover->bMoveUp = NewTriggerValue;
 }
