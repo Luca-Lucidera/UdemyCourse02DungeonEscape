@@ -11,7 +11,7 @@ UTriggerComponent::UTriggerComponent()
 void UTriggerComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	if (IsValid(MoverActor))
 	{
 		Mover = MoverActor->FindComponentByClass<UMover>();
@@ -20,18 +20,41 @@ void UTriggerComponent::BeginPlay()
 			UE_LOG(LogTemp, Warning, TEXT("MoverComponent not found!"));
 			return;
 		}
-		
-		Mover->bMoveUp = true;
-	} 
+	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Mover Actor is not valid"));
 		return;
 	}
+
+	if (IsPressurePlate)
+	{
+		OnComponentBeginOverlap.AddDynamic(this, &UTriggerComponent::OnOverlapBegin);
+		OnComponentEndOverlap.AddDynamic(this, &UTriggerComponent::OnOverlapEnd);
+	}
 }
 
 void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-	FActorComponentTickFunction* ThisTickFunction)
+                                      FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+}
+
+void UTriggerComponent::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+                                       UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                       const FHitResult& SweepResult)
+{
+	if (IsValid(Mover))
+	{
+		Mover->bMoveUp = true;
+	}
+}
+
+void UTriggerComponent::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+                                     UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (IsValid(Mover))
+	{
+		Mover->bMoveUp = false;
+	}
 }

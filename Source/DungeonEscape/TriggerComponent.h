@@ -14,20 +14,31 @@ UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class DUNGEONESCAPE_API UTriggerComponent : public UBoxComponent
 {
 	GENERATED_BODY()
+
 public:
 	UTriggerComponent();
-	
+
 protected:
 	virtual void BeginPlay() override;
 
 public:
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
+	                           FActorComponentTickFunction* ThisTickFunction) override;
+
 public:
 	UPROPERTY(EditAnywhere)
 	AActor* MoverActor;
-	
+
 	UPROPERTY(VisibleAnywhere)
 	UMover* Mover;
 	
+	UPROPERTY(EditAnywhere)
+	bool IsPressurePlate = false;
+
+	UFUNCTION()
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	                    int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	                  int32 OtherBodyIndex);
 };
