@@ -50,7 +50,7 @@ void UTriggerComponent::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 		return;
 	}
 
-	if (!OtherActor->ActorHasTag("PressurePlateActivator"))
+	if (IsValid(OtherActor) && !OtherActor->ActorHasTag("PressurePlateActivator"))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Other Actor does not have PressurePlateActivator tag!"));
 		return;
@@ -68,11 +68,11 @@ void UTriggerComponent::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor
 		return;
 	}
 
-	if (!OtherActor->ActorHasTag("PressurePlateActivator"))
+	if (IsValid(OtherActor) && !OtherActor->ActorHasTag("PressurePlateActivator"))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Other Actor does not have PressurePlateActivator tag!"));
 		return;
 	}
-	
+
 	Mover->bMoveUp = false;
 }
