@@ -44,23 +44,17 @@ void UTriggerComponent::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
                                        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                        const FHitResult& SweepResult)
 {
-	if (!IsValid(Mover))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("MoverComponent not found!"));
-		return;
-	}
-
-	if (IsValid(OtherActor) && !OtherActor->ActorHasTag("PressurePlateActivator"))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Other Actor does not have PressurePlateActivator tag!"));
-		return;
-	}
-
-	Mover->bMoveUp = true;
+	Trigger(OtherActor, true);
 }
+
 
 void UTriggerComponent::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
                                      UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	Trigger(OtherActor, false);
+}
+
+void UTriggerComponent::Trigger(AActor* OtherActor, bool ShouldMoveUp)
 {
 	if (!IsValid(Mover))
 	{
