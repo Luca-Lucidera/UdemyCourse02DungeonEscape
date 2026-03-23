@@ -50,11 +50,14 @@ void UTriggerComponent::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 		return;
 	}
 
-	if (IsTriggered)
+	ActivatorCount++;
+
+	if (IsTriggered || ActivatorCount != 1)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Trigger value is already triggered!"));
 		return;
 	}
+
 
 	Trigger(true);
 }
@@ -69,11 +72,14 @@ void UTriggerComponent::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor
 		return;
 	}
 
-	if (!IsTriggered)
+	ActivatorCount--;
+
+	if (!IsTriggered || ActivatorCount != 0)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Trigger value is not triggered!"));
 		return;
 	}
+
 
 	Trigger(false);
 }

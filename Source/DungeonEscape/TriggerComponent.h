@@ -47,4 +47,8 @@ public:
 	                  int32 OtherBodyIndex);
 		
 	void Trigger(bool NewTriggerValue);
+	
+private:
+	UPROPERTY(VisibleAnywhere)
+	int32 ActivatorCount = 0;
 };
