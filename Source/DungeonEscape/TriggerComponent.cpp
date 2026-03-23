@@ -49,7 +49,7 @@ void UTriggerComponent::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 		UE_LOG(LogTemp, Warning, TEXT("Other Actor does not have PressurePlateActivator tag!"));
 		return;
 	}
-	
+
 	if (IsTriggered)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Trigger value is already triggered!"));
@@ -80,14 +80,13 @@ void UTriggerComponent::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor
 
 void UTriggerComponent::Trigger(bool NewTriggerValue)
 {
-	
 	IsTriggered = NewTriggerValue;
-	
+
 	if (!IsValid(Mover))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("MoverComponent not found!"));
 		return;
 	}
 
-	Mover->bMoveUp = NewTriggerValue;
+	Mover->SetMoveUp(IsTriggered);
 }

@@ -36,7 +36,12 @@ public:
 	FVector MoveOffset;
 	UPROPERTY(EditAnywhere)
 	float MoveTime = 4;
-	UPROPERTY(EditAnywhere)
+
+	bool GetMoveUp();
+	void SetMoveUp(bool NewMoveUp);
+private:
+	UPROPERTY(VisibleAnywhere)
 	bool bMoveUp = false;
+	
 	
 };

@@ -46,8 +46,7 @@ void UMover::BeginPlay()
 	StartLocation = OwnerActor->GetActorLocation();
 	UE_LOG(LogTemp, Display, TEXT("StartLocation: '%s'"), *StartLocation.ToCompactString());
 
-	TargetLocation = StartLocation + MoveOffset;
-	UE_LOG(LogTemp, Display, TEXT("TargetLocation: '%s'"), *TargetLocation.ToCompactString());
+	SetMoveUp(false);
 }
 
 
@@ -55,16 +54,7 @@ void UMover::BeginPlay()
 void UMover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	if (bMoveUp)
-	{
-		TargetLocation = StartLocation + MoveOffset;
-	}
-	else
-	{
-		TargetLocation = StartLocation; 
-	}
-
+	
 	FVector CurrentLocation = GetOwner()->GetActorLocation();
 
 	bReachedTarget = CurrentLocation.Equals(TargetLocation);
@@ -73,7 +63,26 @@ void UMover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponent
 	{
 		// Delta Speed = Distance / Time
 		float Speed = MoveOffset.Length() / MoveTime;
-		TargetLocation = FMath::VInterpConstantTo(CurrentLocation, TargetLocation, DeltaTime, Speed);
-		GetOwner()->SetActorLocation(TargetLocation);
+		FVector NewLocation = FMath::VInterpConstantTo(CurrentLocation, TargetLocation, DeltaTime, Speed);
+		GetOwner()->SetActorLocation(NewLocation);
+	}
+}
+
+bool UMover::GetMoveUp()
+{
+	return bMoveUp;
+}
+
+void UMover::SetMoveUp(bool NewMoveUp)
+{
+	bMoveUp = NewMoveUp;
+
+	if (bMoveUp)
+	{
+		TargetLocation = StartLocation + MoveOffset;
+	}
+	else
+	{
+		TargetLocation = StartLocation;
 	}
 }
